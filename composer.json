@@ -1,11 +1,28 @@
 {
     "name": "smoke/zf2-cache-storage-redis-array",
     "description": "RedisArray Cache Storage for Zend Framework 2",
+    "type": "library",
+    "keywords": [
+        "zf2", "redis", "redisArray", "cache"
+    ],
+    "license": "MIT",
+    "homepage": "https://github.com/smoke/zf2-cache-storage-redis-array",
     "authors": [
         {
             "name": "Radoslav Kirilov",
             "email": "rkirilow@gmail.com"
         }
     ],
-    "require": {}
+    "require": {
+        "php": ">=5.3.23",
+        "zendframework/zend-cache": "2.*"
+    },
+    "autoload": {
+        "psr-0": {
+            "Smoke\\": "src/"
+        },
+        "classmap": [
+            "./"
+        ]
+    }
 }
