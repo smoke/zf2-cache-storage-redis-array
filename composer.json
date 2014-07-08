@@ -1,0 +1,11 @@
+{
+    "name": "smoke/zf2-cache-storage-redis-array",
+    "description": "RedisArray Cache Storage for Zend Framework 2",
+    "authors": [
+        {
+            "name": "Radoslav Kirilov",
+            "email": "rkirilow@gmail.com"
+        }
+    ],
+    "require": {}
+}
