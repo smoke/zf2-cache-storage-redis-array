@@ -49,3 +49,8 @@ return array(
 ```
 
 For the rest of the ZF2 Cache Factory needed settings follow http://framework.zend.com/manual/2.3/en/modules/zend.cache.storage.adapter.html
+
+### LICENSE
+
+The files in this archive are released under the MIT license.
+You can find a copy of this license in [LICENSE.txt](LICENSE.txt).
