@@ -106,31 +106,34 @@ class RedisArrayResourceManager
      */
     protected function connect(array & $resource)
     {
-        $serversArray = $resource['servers_array'];
-        $serversConfig = array();
+        if (!$resource['initialized'] || !$resource['resource'] instanceof RedisResource) {
+            $serversArray = $resource['servers_array'];
+            $serversConfig = array();
 
-        foreach ($serversArray as $server) {
-            $serversConfig[] = $server['host'] . ($server['port'] ? ':' . $server['port'] : '');
-        }
-
-        $redisArrayOptions = array();
-
-        foreach (array_keys(self::$defaultRedisArrayOptions) as $optionKey) {
-            if (isset($resource[$optionKey])) {
-                $redisArrayOptions[$optionKey] = $resource[$optionKey];
+            foreach ($serversArray as $server) {
+                $serversConfig[] = $server['host'] . ($server['port'] ? ':' . $server['port'] : '');
             }
+
+            $redisArrayOptions = array();
+
+            foreach (array_keys(self::$defaultRedisArrayOptions) as $optionKey) {
+                if (isset($resource[$optionKey])) {
+                    $redisArrayOptions[$optionKey] = $resource[$optionKey];
+                }
+            }
+
+            try {
+                $resource['resource'] = new RedisResource($serversConfig, $redisArrayOptions);
+            } catch (\RedisException $e) {
+                throw new Exception\RuntimeException('Could not estabilish connection with Redis instance', $e);
+            }
+
+            $resource['initialized'] = true;
         }
 
         /* @var $redis RedisResource */
-        try {
-            $redis = new RedisResource($serversConfig, $redisArrayOptions);
-        } catch (\RedisException $e) {
-            throw new Exception\RuntimeException('Could not estabilish connection with Redis instance', $e);
-        }
+        $redis = $resource['resource'];
 
-        $resource['resource'] = $redis;
-
-        $resource['initialized'] = true;
         if ($resource['password']) {
             $redis->auth($resource['password']);
         }
