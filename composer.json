@@ -17,7 +17,7 @@
         }
     ],
     "require": {
-        "php": ">=5.3.23",
+        "php": "^5.5 || ^7.0",
         "ext-redis": "*",
         "zendframework/zend-cache": "^2.0"
     },
