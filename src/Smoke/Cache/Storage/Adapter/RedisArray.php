@@ -394,8 +394,9 @@ class RedisArray extends AbstractAdapter implements
     protected function internalGetCapabilities()
     {
         if ($this->capabilities === null) {
+            $resource = $this->getRedisResource();
             $this->capabilityMarker = new stdClass();
-            $minTtl = $this->resourceManager->getMajorVersion($this->resourceId) < 2 ? 0 : 1;
+            $minTtl = $resource->getMajorVersion($this->resourceId) < 2 ? 0 : 1;
             //without serialization redis supports only strings for simple
             //get/set methods
             $this->capabilities     = new Capabilities(
@@ -418,11 +419,12 @@ class RedisArray extends AbstractAdapter implements
                     'staticTtl'          => true,
                     'ttlPrecision'       => 1,
                     'useRequestTime'     => false,
-                    'expiredRead'        => false,
                     'maxKeyLength'       => 255,
                     'namespaceIsPrefix'  => true,
                 )
             );
+            /** @deprecated */
+            $this->capabilities->setExpiredRead($this->capabilityMarker, false);
         }
 
         return $this->capabilities;
