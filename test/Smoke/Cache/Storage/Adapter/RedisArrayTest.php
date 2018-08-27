@@ -29,11 +29,6 @@ class RedisArrayTest extends TestCase
             ->method('getResourceManager')
             ->willReturn($resourceManager);
 
-        $resourceManager
-            ->expects($this->once())
-            ->method('getResource')
-            ->willReturn(new \RedisArray('default'));
-
         $options
             ->expects($this->any())
             ->method('toArray')
