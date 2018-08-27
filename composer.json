@@ -3,7 +3,10 @@
     "description": "RedisArray Cache Storage for Zend Framework 2",
     "type": "library",
     "keywords": [
-        "zf2", "redis", "redisArray", "cache"
+        "zf2",
+        "redis",
+        "redisArray",
+        "cache"
     ],
     "license": "MIT",
     "homepage": "https://github.com/smoke/zf2-cache-storage-redis-array",
@@ -15,15 +18,29 @@
     ],
     "require": {
         "php": ">=5.3.23",
-        "zendframework/zend-cache": "2.*",
-        "ext-redis": "*"
+        "ext-redis": "*",
+        "zendframework/zend-cache": "^2.0"
     },
     "autoload": {
         "psr-0": {
             "Smoke\\": "src/"
-        },
-        "classmap": [
-            "./"
+        }
+    },
+    "autoload-dev": {
+        "psr-0": {
+            "SmokeTest\\": "test/"
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^7.3"
+    },
+    "archive": {
+        "exclude": [
+            "test/",
+            "phpunit.xml.dist"
         ]
+    },
+    "config": {
+        "sort-packages": true
     }
 }
