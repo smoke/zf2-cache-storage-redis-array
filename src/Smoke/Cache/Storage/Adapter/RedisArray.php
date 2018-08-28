@@ -73,26 +73,9 @@ class RedisArray extends AbstractAdapter implements
      */
     protected function getRedisResource()
     {
-        if (!$this->initialized) {
-            $options = $this->getOptions();
+        $resourceManager = $this->getRedisResourceManager();
 
-            // get resource manager and resource id
-            $this->resourceManager = $options->getResourceManager();
-            $this->resourceId      = $options->getResourceId();
-
-            // init namespace prefix
-            $namespace = $options->getNamespace();
-            if ($namespace !== '') {
-                $this->namespacePrefix = $namespace . $options->getNamespaceSeparator();
-            } else {
-                $this->namespacePrefix = '';
-            }
-
-            // update initialized flag
-            $this->initialized = true;
-        }
-
-        return $this->resourceManager->getResource($this->resourceId);
+        return $resourceManager->getResource($this->resourceId);
     }
 
     /* options */
@@ -219,7 +202,7 @@ class RedisArray extends AbstractAdapter implements
 
         try {
             if ($ttl) {
-                if ($this->resourceManager->getMajorVersion($this->resourceId) < 2) {
+                if ($this->getRedisResourceManager()->getMajorVersion($this->resourceId) < 2) {
                     throw new Exception\UnsupportedMethodCallException("To use ttl you need version >= 2.0.0");
                 }
                 $success = $redis->setex($this->namespacePrefix . $normalizedKey, $ttl, $value);
@@ -253,7 +236,7 @@ class RedisArray extends AbstractAdapter implements
         try {
             if ($ttl > 0) {
                 //check if ttl is supported
-                if ($this->resourceManager->getMajorVersion($this->resourceId) < 2) {
+                if ($this->getRedisResourceManager()->getMajorVersion($this->resourceId) < 2) {
                     throw new Exception\UnsupportedMethodCallException("To use ttl you need version >= 2.0.0");
                 }
                 //mSet does not allow ttl, so use transaction
@@ -394,8 +377,9 @@ class RedisArray extends AbstractAdapter implements
     protected function internalGetCapabilities()
     {
         if ($this->capabilities === null) {
+            $resourceManager = $this->getRedisResourceManager();
             $this->capabilityMarker = new stdClass();
-            $minTtl = $this->resourceManager->getMajorVersion($this->resourceId) < 2 ? 0 : 1;
+            $minTtl = $resourceManager->getMajorVersion($this->resourceId) < 2 ? 0 : 1;
             //without serialization redis supports only strings for simple
             //get/set methods
             $this->capabilities     = new Capabilities(
@@ -418,13 +402,38 @@ class RedisArray extends AbstractAdapter implements
                     'staticTtl'          => true,
                     'ttlPrecision'       => 1,
                     'useRequestTime'     => false,
-                    'expiredRead'        => false,
                     'maxKeyLength'       => 255,
                     'namespaceIsPrefix'  => true,
                 )
             );
+            /** @deprecated */
+            $this->capabilities->setExpiredRead($this->capabilityMarker, false);
         }
 
         return $this->capabilities;
+    }
+
+    private function getRedisResourceManager()
+    {
+        if (!$this->initialized) {
+            $options = $this->getOptions();
+
+            // get resource manager and resource id
+            $this->resourceManager = $options->getResourceManager();
+            $this->resourceId      = $options->getResourceId();
+
+            // init namespace prefix
+            $namespace = $options->getNamespace();
+            if ($namespace !== '') {
+                $this->namespacePrefix = $namespace . $options->getNamespaceSeparator();
+            } else {
+                $this->namespacePrefix = '';
+            }
+
+            // update initialized flag
+            $this->initialized = true;
+        }
+
+        return $this->resourceManager;
     }
 }
