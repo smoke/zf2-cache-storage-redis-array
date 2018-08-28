@@ -14,6 +14,10 @@
         {
             "name": "Radoslav Kirilov",
             "email": "rkirilow@gmail.com"
+        },
+        {
+            "name": "Maximilian Bösing",
+            "email": "max@boesing.email"
         }
     ],
     "require": {
