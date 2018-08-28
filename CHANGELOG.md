@@ -18,7 +18,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Removed
 
-- Nothing.
+- [#1](https://github.com/smoke/zf2-cache-storage-redis-array/pull/1) removed support for PHP 5.3 and PHP 5.4 since these versions already reached their EOL in 2014 and 2015.
 
 ### Fixed
 
