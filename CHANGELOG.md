@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 1.1.1 - 2018-09-07
+
+### Added
+
+- Synchronized `Redis` adapter capabilities from `zend-cache` with `RedisArray` adapter. The `RedisArray` Adapter now can handle `serializer` options and thefore serialize objects and arrays as well.
+
+### Changed
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- The `RedisArray` created capaibilities with calling `Capabilities::setExpiredRead` with false, which is deprecated by `zend-cache` and resetted the `staticTtl` value to false, which is in fact incorrect.
+
+### Fixed
+
+- [#2](https://github.com/smoke/zf2-cache-storage-redis-array/pull/2) `RedisResourceManager::getMajorVersion` returned invalid value, if the resource was never used before.
+
 ## 1.1.0 - 2018-08-28
 
 ### Added
