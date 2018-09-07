@@ -18,12 +18,11 @@ class RedisArrayResourceManagerTest extends TestCase
     public function setUp()
     {
         $this->resourceManager = new RedisArrayResourceManager();
-
     }
 
     public function testGetMajorVersion()
     {
-        if (getenv('TESTS_ZEND_CACHE_REDIS_ENABLED') === true) {
+        if (getenv('TESTS_ZEND_CACHE_REDIS_ENABLED') === '') {
             $this->markTestSkipped('Enable TESTS_ZEND_CACHE_REDIS_ENABLED to run this test');
         }
 
