@@ -2,6 +2,7 @@
 
 namespace Smoke\Cache\Storage\Adapter;
 
+use Redis;
 use RedisArray as RedisResource;
 use RedisException as RedisResourceException;
 use stdClass;
@@ -375,16 +376,29 @@ class RedisArray extends AbstractAdapter implements
     protected function internalGetCapabilities()
     {
         if ($this->capabilities === null) {
-            $resourceManager = $this->getRedisResourceManager();
             $this->capabilityMarker = new stdClass();
-            $minTtl = $resourceManager->getMajorVersion($this->resourceId) < 2 ? 0 : 1;
-            //without serialization redis supports only strings for simple
-            //get/set methods
-            $this->capabilities     = new Capabilities(
+
+            $options      = $this->getOptions();
+            $resourceMgr  = $options->getResourceManager();
+            $serializer   = $resourceMgr->getLibOption($options->getResourceId(), Redis::OPT_SERIALIZER);
+            $redisVersion = $resourceMgr->getMajorVersion($options->getResourceId());
+            $minTtl       = version_compare($redisVersion, '2', '<') ? 0 : 1;
+            $supportedMetadata = $redisVersion >= 2 ? ['ttl'] : [];
+
+            $this->capabilities = new Capabilities(
                 $this,
                 $this->capabilityMarker,
-                array(
-                    'supportedDatatypes' => array(
+                [
+                    'supportedDatatypes' => $serializer ? [
+                        'NULL'     => true,
+                        'boolean'  => true,
+                        'integer'  => true,
+                        'double'   => true,
+                        'string'   => true,
+                        'array'    => 'array',
+                        'object'   => 'object',
+                        'resource' => false,
+                    ] : [
                         'NULL'     => 'string',
                         'boolean'  => 'string',
                         'integer'  => 'string',
@@ -393,8 +407,8 @@ class RedisArray extends AbstractAdapter implements
                         'array'    => false,
                         'object'   => false,
                         'resource' => false,
-                    ),
-                    'supportedMetadata'  => array(),
+                    ],
+                    'supportedMetadata'  => $supportedMetadata,
                     'minTtl'             => $minTtl,
                     'maxTtl'             => 0,
                     'staticTtl'          => true,
@@ -402,13 +416,15 @@ class RedisArray extends AbstractAdapter implements
                     'useRequestTime'     => false,
                     'maxKeyLength'       => 255,
                     'namespaceIsPrefix'  => true,
-                )
+                ]
             );
+
             /** @deprecated */
             $this->capabilities->setExpiredRead($this->capabilityMarker, false);
         }
 
         return $this->capabilities;
+
     }
 
     private function getRedisResourceManager()
