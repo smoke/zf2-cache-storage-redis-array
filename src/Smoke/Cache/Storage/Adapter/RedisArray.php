@@ -418,9 +418,6 @@ class RedisArray extends AbstractAdapter implements
                     'namespaceIsPrefix'  => true,
                 ]
             );
-
-            /** @deprecated */
-            $this->capabilities->setExpiredRead($this->capabilityMarker, false);
         }
 
         return $this->capabilities;
