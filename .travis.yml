@@ -51,7 +51,6 @@ matrix:
     env:
     - DEPS=locked
     - CS_CHECK=true
-    - BENCHMARKS=true
   - php: 7.1
     env:
     - DEPS=latest
@@ -79,7 +78,9 @@ install:
 - php -m
 
 script:
+- composer run-script test -- --verbose
 - if [[ $CS_CHECK == 'true' ]]; then composer cs-check ; fi
+
 
 notifications:
   email: false
