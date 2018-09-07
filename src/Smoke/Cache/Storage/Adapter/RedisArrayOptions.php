@@ -5,7 +5,6 @@ namespace Smoke\Cache\Storage\Adapter;
 use Zend\Cache\Exception;
 use Zend\Cache\Storage\Adapter\AdapterOptions;
 
-
 class RedisArrayOptions extends AdapterOptions
 {
     /**
@@ -285,5 +284,4 @@ class RedisArrayOptions extends AdapterOptions
     {
         return $this->getResourceManager()->getRetryInterval($this->getResourceId());
     }
-
 }

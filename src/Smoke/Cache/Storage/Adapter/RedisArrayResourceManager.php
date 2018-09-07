@@ -66,7 +66,8 @@ class RedisArrayResourceManager
             }
             $info = $resource['resource']->info();
 
-            // NOTE: We take the first server info as basis for capabilities, as there seems to be no better option for RedisArray
+            // NOTE: We take the first server info as basis for capabilities, as there seems to be no better
+            // option for RedisArray
             $info = current($info);
 
             $resource['version'] = $info['redis_version'];
@@ -87,7 +88,8 @@ class RedisArrayResourceManager
 
         $info = $redis->info();
 
-        // NOTE: We take the first server info as basis for capabilities, as there seems to be no better option for RedisArray
+        // NOTE: We take the first server info as basis for capabilities, as there seems to be no better
+        // option for RedisArray
         $info = current($info);
 
         $resource['version'] = $info['redis_version'];
@@ -189,8 +191,7 @@ class RedisArrayResourceManager
             $resource = array_merge($defaults, array(
                     'resource' => $resource,
                     'initialized' => isset($resource->socket),
-                )
-            );
+                ));
         }
         $this->resources[$id] = $resource;
         return $this;
@@ -670,7 +671,6 @@ class RedisArrayResourceManager
                 $port    = isset($server['port'])    ? (int) $server['port']    : $port;
                 $timeout = isset($server['timeout']) ? (int) $server['timeout'] : $timeout;
             }
-
         } else {
             // parse server from URI host{:?port}
             $server = trim($server);
