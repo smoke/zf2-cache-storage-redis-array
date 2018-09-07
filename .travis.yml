@@ -26,9 +26,10 @@ matrix:
   - php: 5.5
     env:
     - DEPS=lowest
+    - LEGACY_DEPS="phpunit/phpunit"
   - php: 5.6
     env:
-    - DEPS=locked
+    - DEPS=lowest
     - LEGACY_DEPS="phpunit/phpunit"
   - php: 5.6
     env:

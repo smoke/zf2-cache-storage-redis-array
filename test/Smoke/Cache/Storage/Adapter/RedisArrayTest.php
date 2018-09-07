@@ -21,8 +21,8 @@ class RedisArrayTest extends TestCase
 
     public function testGetCapabilities()
     {
-        $options = $this->createMock(RedisArrayOptions::class);
-        $resourceManager = $this->createMock(RedisArrayResourceManager::class);
+        $options = $this->getMockBuilder(RedisArrayOptions::class)->getMock();
+        $resourceManager = $this->getMockBuilder(RedisArrayResourceManager::class)->getMock();
 
         $options
             ->expects($this->once())
