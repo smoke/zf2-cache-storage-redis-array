@@ -42,7 +42,8 @@
     "archive": {
         "exclude": [
             "test/",
-            "phpunit.xml.dist"
+            "phpunit.xml.dist",
+            ".ci/"
         ]
     },
     "config": {
