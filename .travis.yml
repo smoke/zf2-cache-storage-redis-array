@@ -26,7 +26,7 @@ matrix:
   - php: 5.5
     env:
     - DEPS=locked
-    - LEGACY_DEPS="phpunit/phpunit zendframework/zend-cache"
+    - LEGACY_DEPS="phpunit/phpunit zendframework/zend-cache zendframework/zend-serializer"
   - php: 5.5
     env:
     - DEPS=lowest
