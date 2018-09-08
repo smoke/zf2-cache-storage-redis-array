@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
-         bootstrap="vendor/autoload.php"
+         bootstrap="test/bootstrap.php"
          colors="true"
          convertErrorsToExceptions="true"
          convertDeprecationsToExceptions="false">
@@ -22,11 +22,5 @@
         <!-- E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED -->
         <ini name="error_reporting" value="8191" />
         <ini name="display_startup_errors" value="On" />
-
-        <env name="TESTS_ZEND_CACHE_REDIS_ENABLED" value="false" />
-        <env name="TESTS_ZEND_CACHE_REDIS_HOST" value="127.0.0.1" />
-        <env name="TESTS_ZEND_CACHE_REDIS_PORT" value="6379" />
-        <env name="TESTS_ZEND_CACHE_REDIS_PASSWORD" value="" />
-        <env name="TESTS_ZEND_CACHE_REDIS_DATABASE" value="false" />
     </php>
 </phpunit>

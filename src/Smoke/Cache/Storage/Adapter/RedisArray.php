@@ -4,6 +4,7 @@ namespace Smoke\Cache\Storage\Adapter;
 
 use Redis;
 use RedisArray as RedisResource;
+use RedisArray as BaseRedisArray;
 use RedisException as RedisResourceException;
 use stdClass;
 use Traversable;
@@ -181,7 +182,7 @@ class RedisArray extends AbstractAdapter implements
     {
         $redis = $this->getRedisResource();
         try {
-            return $redis->exists($this->namespacePrefix . $normalizedKey);
+            return (bool) $redis->exists($this->namespacePrefix . $normalizedKey);
         } catch (RedisResourceException $e) {
             throw new Exception\RuntimeException($redis->getLastError(), $e->getCode(), $e);
         }
@@ -234,29 +235,29 @@ class RedisArray extends AbstractAdapter implements
         foreach ($normalizedKeyValuePairs as $normalizedKey => & $value) {
             $namespacedKeyValuePairs[$this->namespacePrefix . $normalizedKey] = & $value;
         }
+
         try {
-            if ($ttl > 0) {
-                //check if ttl is supported
-                if ($this->getRedisResourceManager()->getMajorVersion($this->resourceId) < 2) {
-                    throw new Exception\UnsupportedMethodCallException("To use ttl you need version >= 2.0.0");
-                }
-                //mSet does not allow ttl, so use transaction
-                $transaction = $redis->multi();
-                foreach ($namespacedKeyValuePairs as $key => $value) {
-                    $transaction->setex($key, $ttl, $value);
-                }
-                $success = $transaction->exec();
-            } else {
-                $success = $redis->mSet($namespacedKeyValuePairs);
-            }
+            $succcessByIndex = $this->multipleSetToRedis($redis, $namespacedKeyValuePairs, $ttl);
         } catch (RedisResourceException $e) {
             throw new Exception\RuntimeException($redis->getLastError(), $e->getCode(), $e);
         }
-        if (!$success) {
-            throw new Exception\RuntimeException($redis->getLastError());
+
+        $namespacedKeys = array_keys($namespacedKeyValuePairs);
+        $statuses = [];
+        foreach ($succcessByIndex as $index => $success) {
+            if ($success) {
+                continue;
+            }
+
+            if (!is_numeric($index)) {
+                $statuses[] = $index;
+                continue;
+            }
+
+            $statuses[] = $namespacedKeys[$index];
         }
 
-        return array();
+        return $statuses;
     }
 
     /**
@@ -341,7 +342,14 @@ class RedisArray extends AbstractAdapter implements
     {
         $redis = $this->getRedisResource();
         try {
-            return $redis->flushDB();
+            $statuses = $redis->flushDB();
+            foreach ($statuses as $server => $success) {
+                if (!$success) {
+                    return false;
+                }
+            }
+
+            return true;
         } catch (RedisResourceException $e) {
             throw new Exception\RuntimeException($redis->getLastError(), $e->getCode(), $e);
         }
@@ -446,5 +454,26 @@ class RedisArray extends AbstractAdapter implements
         }
 
         return $this->resourceManager;
+    }
+
+    private function multipleSetToRedis(BaseRedisArray $redis, array $namespacedKeyValuePairs, $ttl)
+    {
+        if (!$ttl) {
+            $statuses = [];
+            foreach ($namespacedKeyValuePairs as $key => $value) {
+                if ($redis->set($key, $value)) {
+                    continue;
+                }
+                $statuses[$key] = true;
+            }
+
+            return $statuses;
+        }
+
+        $transaction = $redis->multi(Redis::MULTI);
+        foreach ($namespacedKeyValuePairs as $key => $value) {
+            $transaction->setex($key, $ttl, $value);
+        }
+        return $transaction->exec();
     }
 }
