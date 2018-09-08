@@ -8,7 +8,6 @@
 namespace PsrTest\CacheItemPool;
 
 use Cache\IntegrationTests\CachePoolTest;
-use PackageVersions\Versions;
 use Smoke\Cache\Storage\Adapter\RedisArray;
 use Zend\Cache\Psr\CacheItemPool\CacheItemPoolDecorator;
 use Zend\Cache\Storage\Plugin\Serializer;
@@ -30,7 +29,7 @@ class RedisIntegrationTest extends CachePoolTest
 
     protected function setUp()
     {
-        if (version_compare(Versions::getVersion('zendframework/zend-cache'), '2.8', '<')) {
+        if (!class_exists(CacheItemPoolDecorator::class)) {
             $this->markTestSkipped('Cannot test simple-cache compatibility for `zend-cache` less than v2.8');
         }
 

@@ -8,7 +8,6 @@
 namespace PsrTest\SimpleCache;
 
 use Cache\IntegrationTests\SimpleCacheTest;
-use PackageVersions\Versions;
 use Smoke\Cache\Storage\Adapter\RedisArray;
 use Zend\Cache\Psr\SimpleCache\SimpleCacheDecorator;
 use Zend\Cache\Storage\Adapter\Redis;
@@ -31,7 +30,7 @@ class RedisIntegrationTest extends SimpleCacheTest
 
     protected function setUp()
     {
-        if (version_compare(Versions::getVersion('zendframework/zend-cache'), '2.8', '<')) {
+        if (!class_exists(SimpleCacheDecorator::class)) {
             $this->markTestSkipped('Cannot test simple-cache compatibility for `zend-cache` less than v2.8');
         }
 
