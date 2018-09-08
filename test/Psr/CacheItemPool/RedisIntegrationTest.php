@@ -8,9 +8,9 @@
 namespace PsrTest\CacheItemPool;
 
 use Cache\IntegrationTests\CachePoolTest;
+use PackageVersions\Versions;
 use Smoke\Cache\Storage\Adapter\RedisArray;
 use Zend\Cache\Psr\CacheItemPool\CacheItemPoolDecorator;
-use Zend\Cache\Storage\Adapter\Redis;
 use Zend\Cache\Storage\Plugin\Serializer;
 use Zend\Cache\Exception;
 use Zend\ServiceManager\Exception\ServiceNotCreatedException;
@@ -30,6 +30,10 @@ class RedisIntegrationTest extends CachePoolTest
 
     protected function setUp()
     {
+        if (version_compare(Versions::getVersion('zendframework/zend-cache'), '2.8', '<')) {
+            $this->markTestSkipped('Cannot test simple-cache compatibility for `zend-cache` less than v2.8');
+        }
+
         // set non-UTC timezone
         $this->tz = date_default_timezone_get();
         date_default_timezone_set('America/Vancouver');
@@ -53,7 +57,9 @@ class RedisIntegrationTest extends CachePoolTest
         $options = ['resource_id' => __CLASS__];
 
         if (getenv('TESTS_ZEND_CACHE_REDIS_HOST') && getenv('TESTS_ZEND_CACHE_REDIS_PORT')) {
-            $options['servers_array'] = [[getenv('TESTS_ZEND_CACHE_REDIS_HOST'), getenv('TESTS_ZEND_CACHE_REDIS_PORT')]];
+            $options['servers_array'] = [
+                [getenv('TESTS_ZEND_CACHE_REDIS_HOST'), getenv('TESTS_ZEND_CACHE_REDIS_PORT')]
+            ];
         } elseif (getenv('TESTS_ZEND_CACHE_REDIS_HOST')) {
             $options['servers_array'] = [[getenv('TESTS_ZEND_CACHE_REDIS_HOST')]];
         }

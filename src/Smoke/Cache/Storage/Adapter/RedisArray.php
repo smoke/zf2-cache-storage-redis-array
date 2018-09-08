@@ -429,7 +429,6 @@ class RedisArray extends AbstractAdapter implements
         }
 
         return $this->capabilities;
-
     }
 
     private function getRedisResourceManager()
