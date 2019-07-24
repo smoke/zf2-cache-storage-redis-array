@@ -64,13 +64,14 @@ class RedisArrayResourceManager
             if (!$resource['initialized']) {
                 $this->connect($resource);
             }
-            $info = $resource['resource']->info();
 
-            // NOTE: We take the first server info as basis for capabilities, as there seems to be no better
-            // option for RedisArray
-            $info = current($info);
+            if (! $resource['version']) {
+                // NOTE: We take the first server info as basis for capabilities, as there seems to be no better
+                // option for RedisArray
+                $info = $resource['resource']->info();
+                $resource['version'] = $info['redis_version'];
+            }
 
-            $resource['version'] = $info['redis_version'];
             return $resource['resource'];
         }
 
