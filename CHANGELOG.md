@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 1.2.0 - 2019-07-29
+
+### Added
+
+- [#6](https://github.com/smoke/zf2-cache-storage-redis-array/pull/6) PSR-16 & PSR-6 support with integration unit tests provided by [cache/integration-tests](https://github.com/php-cache/integration-tests)
+
+### Changed
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#4](https://github.com/smoke/zf2-cache-storage-redis-array/pull/4) On every `RedisArray::getResource` call, `RedisArray` requested an `INFO` call to redis to receive the version. This led to unnecessary `INFO` calls on every other call made to redis. **Thanks to @CyberLine** 
+
 ## 1.1.1 - 2018-09-07
 
 ### Added
