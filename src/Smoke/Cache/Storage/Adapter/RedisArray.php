@@ -455,24 +455,20 @@ class RedisArray extends AbstractAdapter implements
         return $this->resourceManager;
     }
 
+    /**
+     * Returns an array which contains the written status of every key.
+     *
+     * @param array<string,mixed> $namespacedKeyValuePairs
+     * @param int $ttl
+     * @return array<string,bool>
+     */
     private function multipleSetToRedis(BaseRedisArray $redis, array $namespacedKeyValuePairs, $ttl)
     {
-        if (!$ttl) {
-            $statuses = [];
-            foreach ($namespacedKeyValuePairs as $key => $value) {
-                if ($redis->set($key, $value)) {
-                    continue;
-                }
-                $statuses[$key] = true;
-            }
-
-            return $statuses;
-        }
-
-        $transaction = $redis->multi(Redis::MULTI);
+        $statuses = [];
         foreach ($namespacedKeyValuePairs as $key => $value) {
-            $transaction->setex($key, $ttl, $value);
+            $statuses[$key] = $ttl ? $redis->setex($key, $ttl, $value) : $redis->set($key, $value);
         }
-        return $transaction->exec();
+
+        return $statuses;
     }
 }
