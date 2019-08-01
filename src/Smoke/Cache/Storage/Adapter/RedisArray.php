@@ -290,7 +290,7 @@ class RedisArray extends AbstractAdapter implements
     {
         $redis = $this->getRedisResource();
         try {
-            return (bool) $redis->delete($this->namespacePrefix . $normalizedKey);
+            return (bool) $redis->del($this->namespacePrefix . $normalizedKey);
         } catch (RedisResourceException $e) {
             throw new Exception\RuntimeException($redis->getLastError(), $e->getCode(), $e);
         }
